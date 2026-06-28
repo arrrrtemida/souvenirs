@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Подключаем 3D плеер -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+</head>
+<body>
+    <header><h1>Минский коллаж</h1></header>
+
+    <div class="container">
+        <a href="mugs.html" class="back-btn">← Вернуться к списку</a>
+        
+        <!-- 3D МОДЕЛЬ -->
+        <model-viewer src="models/mug-minskk.glb" ar camera-controls auto-rotate shadow-intensity="1">
+            <button slot="ar-button" style="background: white; border: 1px solid red; padding: 10px; position: absolute; bottom: 20px; right: 20px;">
+                Поставить на стол
+            </button>
+        </model-viewer>
+
+        <h2>Описание товара</h2>
+        <p>Качественная керамика, авторский принт 21:9.</p>
+
+        <!-- БЛОК ОРНАМЕНТА -->
+        <div class="pattern-container">
+            <h3>Детали орнамента</h3>
+            
+            <!-- Лента узора -->
+            <div id="patternLine" class="pattern-line" style="background-image: url('images/fullMugMinskk.png');"></div>
+            
+            <!-- Контроллер масштаба -->
+            <div class="pattern-controls">
+                <span>Мелко</span>
+                <input type="range" id="patternScale" min="20" max="200" value="100">
+                <span>Крупно</span>
+            </div>
+            
+            <p class="pattern-desc">Нажмите на узор, чтобы развернуть, или используйте ползунок для масштаба</p>
+        </div>
+    </div> <!-- Закрылся основной контейнер -->
+
+    <!-- Всплывающее окно (Модальное) -->
+    <div id="imageModal" class="modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="fullPatternImage">
+    </div>
+
+    <!-- ОБЪЕДИНЕННЫЙ СКРИПТ (Шаг 3) -->
+    <script>
+        const scaleInput = document.getElementById('patternScale');
+        const patternLine = document.getElementById('patternLine');
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('fullPatternImage');
+        const closeBtn = document.querySelector('.close-modal');
+
+        // 1. Логика ползунка (Масштаб)
+        scaleInput.addEventListener('input', (e) => {
+            const zoomValue = e.target.value;
+            patternLine.style.backgroundSize = `auto ${zoomValue}%`;
+        });
+
+        // 2. Логика открытия окна при клике
+        patternLine.onclick = function() {
+            modal.style.display = "flex";
+            // Берем картинку прямо из стиля ленты
+            let bg = window.getComputedStyle(patternLine).backgroundImage;
+            let url = bg.replace(/url\(['"]?(.*?)['"]?\)/i, '$1');
+            modalImg.src = url;
+        }
+
+        // 3. Логика закрытия на крестик
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // 4. Закрытие при клике на темный фон
+        modal.onclick = function(e) {
+            if (e.target !== modalImg) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>
